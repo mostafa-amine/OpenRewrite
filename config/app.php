@@ -212,4 +212,7 @@ return [
         // 'ExampleClass' => App\Example\ExampleClass::class,
     ])->toArray(),
 
+    // open api key
+    // 'openai_api_key' => env('OPENAI_API_KEY'),
+
 ];
