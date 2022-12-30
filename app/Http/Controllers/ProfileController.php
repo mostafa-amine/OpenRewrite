@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\ProfileUpdateRequest;
+use Exception;
+use Dotenv\Dotenv;
 use Illuminate\Http\Request;
+use App\Services\OpenaiService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
+use App\Http\Requests\ProfileUpdateRequest;
 
 class ProfileController extends Controller
 {
@@ -63,5 +66,33 @@ class ProfileController extends Controller
         $request->session()->regenerateToken();
 
         return Redirect::to('/');
+    }
+
+
+    public function setToken(Request $request)
+    {
+        //  Get The environment File Path
+        $envFile = app()->environmentFilePath();
+        // Get the contenct of the .env file
+        $contents = file_get_contents($envFile);
+        // Replace the OPENAI_API_KEY value by the user value
+        $contents = preg_replace("/OPENAI_API_KEY=(.*)/", "OPENAI_API_KEY=$request->token", $contents);
+        // Check if the token valid
+
+        try{
+            OpenaiService::generate($request->token , "Test");
+        }
+        catch(Exception $e) {
+            return redirect()->back()->withErrors(['token' => 'The API token is not valid']);
+        }
+
+        // Puth the new value in the .env file
+        file_put_contents($envFile, $contents);
+
+        // Flash message
+        session()->flash('status' , 'token-valid');
+
+
+        return Redirect::to('/profile');
     }
 }
