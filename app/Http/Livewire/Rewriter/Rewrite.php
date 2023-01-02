@@ -88,6 +88,7 @@ class Rewrite extends Component implements HasForms
         return [
             Wizard::make([
                 Step::make('Your Text ')
+                ->icon('heroicon-o-user')
                 ->description('Write The Text To rewrite')
                 ->schema([
                     Textarea::make('user_input')
@@ -96,9 +97,12 @@ class Rewrite extends Component implements HasForms
                 ]),
 
                 Step::make('Rewriting Tasks')
+                ->icon('heroicon-o-pencil')
                 ->description('Specify Your Text Rewriting Tasks')
                 ->schema([
-                    // Text Tone
+                    Grid::make(2)
+                    ->schema([
+                        // Text Tone
                     Select::make('selected_t_tones')
                     ->multiple()
                     ->placeholder('Select Text Tones')
@@ -125,9 +129,11 @@ class Rewrite extends Component implements HasForms
                     ->label('Correct Errors')
                     ->options($this->text_errors)
                     ->searchable(),
+                    ])
                 ]),
 
                 Step::make('Result')
+                ->icon('heroicon-o-chat')
                 ->schema([
                     TextArea::make('user_output')
                     ->label('Result')
@@ -141,43 +147,35 @@ class Rewrite extends Component implements HasForms
 
         ];
     }
-
     public function rewritngTasks()
     {
 
-        if(count($this->selected_t_tones)){
-            $this->tasks .= 'Make The tone of the text : ' ;
-            foreach($this->selected_t_tones as $tone)
-            {
-                $this->tasks .= $tone . ', ';
-            }
+        if(!empty($this->selected_t_tones)){
+            $this->tasks .= ' Make The tone of the text : ' ;
+            $this->tasks .= implode(',' , $this->selected_t_tones);
         }
 
 
-        if(count($this->selected_t_structure))
+        if(!empty($this->selected_t_structure))
         {
-            $this->tasks .= 'And make the structure of the text : ';
-            foreach($this->selected_t_structure as $structure)
-            {
-                $this->tasks .= $structure . ', ';
-            }
+            $this->tasks .= ', And make the structure of the text : ';
+            $this->tasks .= implode(',' , $this->selected_t_structure);
+
         }
 
-        if(count($this->selected_f_errors)){
-            $this->tasks .= 'And Fix The ';
-            foreach($this->selected_f_errors as $error)
-            {
-                $this->tasks .= $error . ', ';
-            }
+        if(!empty($this->selected_f_errors)){
+            $this->tasks .= ', And Fix The ';
+            $this->tasks .= implode(',' , $this->selected_f_errors);
+
         }
 
         if($this->t_focus !== '')
         {
-            $this->tasks .= 'And Make the text more focused on : ' . $this->t_focus;
+            $this->tasks .= ', And Make the text more focused on the term : ' . $this->t_focus;
         }
     }
 
-    public function submit()
+    public function rewrite()
     {
 
         $this->skippable = true;
@@ -186,6 +184,7 @@ class Rewrite extends Component implements HasForms
         $this->tasks .= $this->user_input . "', ";
 
         $this->rewritngTasks();
+        dd($this->tasks);
         $result = OpenaiService::generate(env('OPENAI_API_KEY') , $this->tasks);
 
         $this->user_output = $result;
