@@ -8,6 +8,12 @@ use OpenAI;
 
 class OpenaiService
 {
+    /**
+     * @param mixed $apiToken
+     * @param mixed $userText
+     *
+     * @return [string]
+     */
     public static function generate($apiToken , $userText)
     {
         $client = OpenAI::client($apiToken);
