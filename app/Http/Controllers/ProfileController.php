@@ -68,7 +68,11 @@ class ProfileController extends Controller
         return Redirect::to('/');
     }
 
-
+    /**
+     * Set user token
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function setToken(Request $request)
     {
         //  Get The environment File Path
