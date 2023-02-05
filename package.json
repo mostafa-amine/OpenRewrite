@@ -2,9 +2,8 @@
     "private": true,
     "scripts": {
         "dev": "vite",
-        "build": "vite build",
-        "preview": "vite preview",
-        "postinstall": "npm run dev"
+        "build": "npm run production",
+        "preview": "vite preview"
     },
     "engines": {
         "node": "18.x"
