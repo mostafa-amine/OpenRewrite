@@ -184,7 +184,7 @@ class Rewrite extends Component implements HasForms
         $this->tasks .= $this->user_input . "', ";
 
         $this->rewritngTasks();
-        dd($this->tasks);
+
         $result = OpenaiService::generate(env('OPENAI_API_KEY') , $this->tasks);
 
         $this->user_output = $result;
