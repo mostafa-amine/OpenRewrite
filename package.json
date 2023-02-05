@@ -2,7 +2,7 @@
     "private": true,
     "scripts": {
         "dev": "vite",
-        "build": "npm run production",
+        "build": "vite build && vite build --ssr",
         "preview": "vite preview"
     },
     "engines": {
